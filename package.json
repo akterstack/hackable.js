@@ -1,0 +1,10 @@
+{
+  "name": "hackable",
+  "version": "1.0.0",
+  "description": "Hook engine for JavaScript",
+  "main": "hackable.js",
+  "repository": "git@github.com:akterstack/hackable.js.git",
+  "author": "akterstack",
+  "license": "MIT",
+  "private": false
+}
