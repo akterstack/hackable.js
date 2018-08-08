@@ -1,2 +1,2 @@
-# hackable.js
+# Hackable JS
 Hook engine/plugin ecosystem for JavaScript
