@@ -1,9 +1,9 @@
 {
-  "name": "hackable",
-  "version": "1.0.0",
+  "name": "hackablejs",
+  "version": "1.0.3",
   "description": "Hook engine for JavaScript",
   "main": "hackable.js",
-  "repository": "git@github.com:akterstack/hackable.js.git",
+  "repository": "git@github.com:akterstack/hackablejs.git",
   "author": "akterstack",
   "license": "MIT",
   "private": false

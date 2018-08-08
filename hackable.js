@@ -1,18 +1,14 @@
-'use strict'
-
 class Hackable {
 
-  prefix = this.constructor.name.toLowerCase()
-
-  actions = []
-
-  filters = []
-
   constructor(prefix) {
-    if (typeof prefix !== 'string') {
+    if (!prefix) {
+      prefix = this.constructor.name.toLowerCase()
+    } else if (typeof prefix !== 'string') {
       throw new Error('prefix must be string')
     }
     this.prefix = prefix
+    this.actions = []
+    this.filters = []
   }
 
   addActions(name, handler) {
@@ -70,10 +66,9 @@ class Action extends Hook {
 
 class Filter extends Hook {
 
-  cursorIdx = 0;
-
   constructor(name) {
     super(name);
+    cursorIdx = 0;
   }
 
   async invoke(data) {
