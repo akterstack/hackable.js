@@ -1,36 +1,17 @@
-class Hackable {
+const _actionsMap = new WeakMap()
+const filtersMap = new WeakMap()
 
-  constructor(prefix) {
-    if (!prefix) {
-      prefix = this.constructor.name.toLowerCase()
-    } else if (typeof prefix !== 'string') {
-      throw new Error('prefix must be string')
-    }
-    this.prefix = prefix
-    this.actions = []
-    this.filters = []
-  }
+const hooks = {
+  actionsMap: {},
+  filtersMap: {}
+}
 
-  addActions(name, handler) {
-    let action = new Action(name)
-    action.addHandler(handler)
-    this.actions[action.name] = action
-  }
+let throwAbstractTypeError = (typeName) => {
+  throw new TypeError(`Abstract type '${typeName}' must be implemented`)
+}
 
-  doAction(name, data) {
-    this.actions[name](data)
-  }
-
-  addFilter(name, handler) {
-    let filter = new Filter(name)
-    filter.addHandler(handler)
-    this.filters[name] = filter
-  }
-
-  async doFilter(name, data) {
-    return await this.filters[name](data)
-  }
-
+let throwAbstractMethodError = (methodName) => {
+  throw new TypeError(`Abstract method '${methodName}' must be implemented`)
 }
 
 class Hook {
@@ -45,7 +26,7 @@ class Hook {
   }
 
   invoke(data) {
-    throw new Error('No default implementation found.')
+    throwAbstractMethodError('invoke')
   }
 
 }
@@ -73,7 +54,7 @@ class Filter extends Hook {
 
   async invoke(data) {
     let ndata = data;
-    for (;;) {
+    for (; ;) {
       if (this.cursorIdx === this.handlers.length) return ndata;
       ndata = this.next(ndata)
     }
@@ -83,6 +64,47 @@ class Filter extends Hook {
     let ndata = Object.assign({}, data)
     ndata = await this.handlers[this.cursorIdx++](ndata, this.next)
     return ndata;
+  }
+
+}
+
+class Hackable {
+
+  constructor() {
+    if (new.target === Hackable) {
+      throwAbstractTypeError(Hackable.constructor.name)
+    }
+    if (typeof this.prefix !== 'string') {
+      throw new Error('prefix must be string')
+    }
+    _actionsMap.set(this, {})
+    filtersMap.set(this, {})
+  }
+
+  get prefix() {
+    throwAbstractMethodError('prefix')
+  }
+
+  addAction(name, handler) {
+    let action = new Action(name)
+    action.addHandler(handler)
+    let actionMap = _actionsMap.get(this) || {}
+    _actionsMap.set(this, actionMap)
+    actionMap[action.name] = action
+  }
+
+  doAction(name, data) {
+    this.actions[name](data)
+  }
+
+  addFilter(name, handler) {
+    let filter = new Filter(name)
+    filter.addHandler(handler)
+    this.filters[name] = filter
+  }
+
+  async doFilter(name, data) {
+    return await this.filters[name](data)
   }
 
 }

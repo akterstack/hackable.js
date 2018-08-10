@@ -6,5 +6,6 @@
   "repository": "git@github.com:akterstack/hackablejs.git",
   "author": "akterstack",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "keywords": ["plugin", "hooks"]
 }
